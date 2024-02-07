@@ -1,0 +1,63 @@
+#include <iostream>
+#include <string>
+#include <unordered_set>
+#include <sstream>
+#include <algorithm>
+
+// Function to perform sentiment analysis
+std::string analyzeSentiment(const std::string& text) {
+    // Predefined sets of positive and negative words
+    std::unordered_set<std::string> positiveWords = {"good", "happy", "joy", "awesome", "excellent"};
+    std::unordered_set<std::string> negativeWords = {"bad", "sad", "angry", "terrible", "awful"};
+
+    // Counters for positive and negative words
+    int positiveCount = 0;
+    int negativeCount = 0;
+
+    // Iterate through words in the text
+    std::string word;
+    std::istringstream iss(text);
+    while (iss >> word) {
+        // Convert word to lowercase for case-insensitive comparison
+        std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+        
+        // Check if word is positive or negative
+        if (positiveWords.find(word) != positiveWords.end()) {
+            positiveCount++;
+        } else if (negativeWords.find(word) != negativeWords.end()) {
+            negativeCount++;
+        }
+    }
+
+    // Determine sentiment based on counts
+    if (positiveCount > negativeCount) {
+        return "Positive";
+    } else if (negativeCount > positiveCount) {
+        return "Negative";
+    } else if (positiveCount == 0 && negativeCount == 0) {
+        return "Neutral";
+    } else {
+        return "Undetermined"; // If positive and negative counts are equal, but not both zero
+    }
+}
+
+int main() {
+    char choice;
+    do {
+        // Prompt user to enter the text string
+        std::cout << "Enter the text string: ";
+        std::string userInput;
+        std::getline(std::cin, userInput);
+
+        // Perform sentiment analysis on user input
+        std::string sentiment = analyzeSentiment(userInput);
+        std::cout << "Sentiment of the text: " << sentiment << std::endl;
+
+        // Ask user if they want to continue
+        std::cout << "Do you want to analyze another text? (y/n): ";
+        std::cin >> choice;
+        std::cin.ignore(); // Ignore the newline character in the input buffer
+    } while (choice == 'y' || choice == 'Y');
+
+    return 0;
+}
